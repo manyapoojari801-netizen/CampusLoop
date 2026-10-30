@@ -1,6 +1,9 @@
 
 "use client";
 
+import LandingPage from "../components/Landingpage";
+import ItemCard from "../components/itemcard";
+import SearchBar from "../components/searchbar";
 import { useState } from "react";
 import { useItems } from "../context/ItemContext";
 
@@ -25,27 +28,7 @@ export default function Dashboard() {
   return (
     <main className="dashboard">
 
-      <section className="welcome">
-        <div className="welcome-content">
-          <span className="welcome-tag">YOUR CAMPUS, CONNECTED</span>
-          <h1>Lost something?<br />Let's find it.</h1>
-          <p>
-            A smarter way to report, discover and reunite
-            lost belongings across your campus.
-          </p>
-
-          <div className="welcome-buttons">
-            <a href="#items" className="hero-btn">
-              Explore Items
-            </a>
-            <a href="/report" className="hero-btn secondary-btn">
-              + Report an Item
-            </a>
-          </div>
-        </div>
-
-        <div className="welcome-art">🎒</div>
-      </section>
+      <LandingPage />
 
       <section className="stats-grid">
         <div className="stat-card">
@@ -89,11 +72,9 @@ export default function Dashboard() {
         </div>
 
         <div className="search-panel">
-          <input
-            type="text"
-            placeholder="Search by item, location or keyword..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+          <SearchBar
+          searchTerm={search}
+          onSearch={setSearch}
           />
 
           <select
@@ -121,45 +102,12 @@ export default function Dashboard() {
         <div className="items-grid">
           {filteredItems.length > 0 ? (
             filteredItems.map((item) => (
-              <article className="item-card" key={item.id}>
-                <div className="item-card-top">
-                  <span className={`status ${item.status.toLowerCase()}`}>
-                    {item.status}
-                  </span>
-
-                  <button
-                    className={`save-btn ${item.saved ? "saved" : ""}`}
-                    onClick={() => toggleSaved(item.id)}
-                    aria-label="Save item"
-                  >
-                    {item.saved ? "♥" : "♡"}
-                  </button>
-                </div>
-
-                <div className="item-emoji">
-                  {item.category === "Electronics" ? "🎧" :
-                    item.category === "Books" ? "📘" :
-                    item.category === "ID Cards" ? "🪪" : "🎒"}
-                </div>
-
-                <span className="item-category">{item.category}</span>
-                <h3>{item.name}</h3>
-                <p className="item-description">{item.description}</p>
-
-                <div className="item-info">
-                  <span>📍 {item.location}</span>
-                  <span>📅 {item.date}</span>
-                </div>
-
-                {item.status !== "Returned" && (
-                  <button
-                    className="returned-btn"
-                    onClick={() => markReturned(item.id)}
-                  >
-                    Mark as Returned
-                  </button>
-                )}
-              </article>
+              <ItemCard
+  key={item.id}
+  item={item}
+  onToggleSave={toggleSaved}
+  onMarkReturned={markReturned}
+/>
             ))
           ) : (
             <div className="empty-state">
